@@ -37,7 +37,9 @@
             <form method="get" action="/user/<%= user.id %>/edit">
               <button>edit</button>
             </form>
-            <form><button>delete</button></form>
+            <form method="get" action="/user/<%= user.id %>/delete">
+              <button>delete</button>
+            </form>
           </div>
         </td>
       </tr>

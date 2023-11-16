@@ -100,7 +100,7 @@ app.patch("/user/:id/", (req, res) => {
   }
 });
 
-app.get("/user/add", (req, res) => {
+app.get("/user/adduser", (req, res) => {
   res.render("adduser.ejs");
 });
 
@@ -117,6 +117,39 @@ app.post("/user/adduser", (req, res) => {
     });
   } catch (err) {
     res.send("error in DB");
+  }
+});
+
+app.get("/user/:id/delete", (req, res) => {
+  let id = req.params;
+  console.log(id);
+  res.render("delete.ejs", { id });
+});
+
+app.delete("/user/:id", (req, res) => {
+  let { id } = req.params;
+  let { email, password } = req.body;
+  console.log("form data-------->", id, email, password);
+  let q = `SELECT * FROM user WHERE id = "${id}"`;
+  try {
+    connection.query(q, (err, result) => {
+      console.log(result);
+      let { email: org_email, password: org_password } = result[0];
+      console.log("db data------->", org_email, org_password);
+
+      if ((email === org_email) & (password === org_password)) {
+        let q2 = `DELETE FROM user WHERE id = "${id}"`;
+        connection.query(q2, (err, result) => {
+          console.log(result);
+          console.log("user deleted");
+          res.redirect("/user");
+        });
+      } else {
+        res.send("wrong email and password.");
+      }
+    });
+  } catch (err) {
+    console.log(error);
   }
 });
 
