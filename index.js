@@ -1,4 +1,10 @@
-const { faker } = require("@faker-js/faker");
+const express = require("express");
+const app = express();
+let port = "8080";
+
+const path = require("path");
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "/views"));
 
 const mysql = require("mysql2");
 
@@ -10,32 +16,25 @@ const connection = mysql.createConnection({
   password: "mysql@123",
 });
 
-const randomdata = () => {
-  return [
-    faker.string.uuid(),
-    faker.internet.userName(),
-    faker.internet.email(),
-    faker.internet.password(),
-  ];
-};
-let data = [];
+// GET / route
+app.get("/", (req, res) => {
+  let q = "SELECT COUNT(id) FROM user";
 
-for (let i = 1; i <= 100; i++) {
-  data.push(randomdata());
-}
+  try {
+    connection.query(q, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      //res.send(result);
+      let count = result[0]["COUNT(id)"];
+      console.log("count: ", count);
+      res.render("home.ejs", { count });
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("error in DB");
+  }
+});
 
-// query
-// let q = `SELECT * FROM user`;
-let q = `INSERT INTO user VALUES ?`;
-
-try {
-  connection.query(q, [data], (err, result) => {
-    if (err) throw err;
-    console.log("result: ", result);
-  });
-} catch (err) {
-  console.log(err);
-}
-
-// close connection
-connection.end();
+app.listen(port, () => {
+  console.log(`server is listening to port ${port}`);
+});
