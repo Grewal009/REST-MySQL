@@ -25,7 +25,7 @@
       <tr>
         <th>id</th>
         <th>username</th>
-        <th>password</th>
+        <th>email</th>
       </tr>
       <% for( user of result) { %>
       <tr>
@@ -34,7 +34,9 @@
         <td><%= user.email%></td>
         <td>
           <div>
-            <form><button>edit</button></form>
+            <form method="get" action="/user/<%= user.id %>/edit">
+              <button>edit</button>
+            </form>
             <form><button>delete</button></form>
           </div>
         </td>
