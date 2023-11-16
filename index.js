@@ -18,14 +18,18 @@ const randomdata = () => {
     faker.internet.password(),
   ];
 };
-let data = randomdata();
+let data = [];
+
+for (let i = 1; i <= 100; i++) {
+  data.push(randomdata());
+}
 
 // query
 // let q = `SELECT * FROM user`;
-let q = `INSERT INTO user VALUES(?,?,?,?)`;
+let q = `INSERT INTO user VALUES ?`;
 
 try {
-  connection.query(q, data, (err, result) => {
+  connection.query(q, [data], (err, result) => {
     if (err) throw err;
     console.log("result: ", result);
   });
