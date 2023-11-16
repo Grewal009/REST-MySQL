@@ -10,11 +10,22 @@ const connection = mysql.createConnection({
   password: "mysql@123",
 });
 
+const randomdata = () => {
+  return [
+    faker.string.uuid(),
+    faker.internet.userName(),
+    faker.internet.email(),
+    faker.internet.password(),
+  ];
+};
+let data = randomdata();
+
 // query
-let q = `SELECT * FROM user`;
+// let q = `SELECT * FROM user`;
+let q = `INSERT INTO user VALUES(?,?,?,?)`;
 
 try {
-  connection.query(q, (err, result) => {
+  connection.query(q, data, (err, result) => {
     if (err) throw err;
     console.log("result: ", result);
   });
@@ -24,15 +35,3 @@ try {
 
 // close connection
 connection.end();
-
-const randomdata = () => {
-  return [
-    faker.string.uuid(),
-    faker.internet.userName(),
-    faker.internet.email(),
-    faker.internet.password(),
-    faker.image.avatar(),
-  ];
-};
-
-// console.log(randomdata());
