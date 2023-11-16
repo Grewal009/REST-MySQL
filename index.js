@@ -3,9 +3,11 @@ const app = express();
 let port = "8080";
 
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 const methodOverride = require("method-override");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
 
 app.use(express.urlencoded({ extended: true }));
@@ -94,6 +96,26 @@ app.patch("/user/:id/", (req, res) => {
     });
   } catch (err) {
     console.log(err);
+    res.send("error in DB");
+  }
+});
+
+app.get("/user/add", (req, res) => {
+  res.render("adduser.ejs");
+});
+
+app.post("/user/adduser", (req, res) => {
+  let { username, email, password } = req.body;
+  let id = uuidv4();
+
+  let q = `INSERT INTO user(id, username, email, password) VALUES("${id}","${username}","${email}","${password}")`;
+  try {
+    connection.query(q, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.redirect("/user");
+    });
+  } catch (err) {
     res.send("error in DB");
   }
 });
