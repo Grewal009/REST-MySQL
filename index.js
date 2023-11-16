@@ -19,7 +19,6 @@ const connection = mysql.createConnection({
 // GET / route
 app.get("/", (req, res) => {
   let q = "SELECT COUNT(id) FROM user";
-
   try {
     connection.query(q, (err, result) => {
       if (err) throw err;
@@ -28,6 +27,20 @@ app.get("/", (req, res) => {
       let count = result[0]["COUNT(id)"];
       console.log("count: ", count);
       res.render("home.ejs", { count });
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("error in DB");
+  }
+});
+
+app.get("/user", (req, res) => {
+  let q = "SELECT id, username, email FROM user";
+  try {
+    connection.query(q, (err, result) => {
+      if (err) throw err;
+      //res.send(result);
+      res.render("showusers.ejs", { result });
     });
   } catch (err) {
     console.log(err);
